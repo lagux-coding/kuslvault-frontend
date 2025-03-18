@@ -135,6 +135,13 @@ const SignIn = () => {
         </Button>
       </div>
 
+      <div className="text-muted-foreground mt-4 px-8 text-center text-sm">
+        Don't have an account?{" "}
+        <Link to="/sign-up" className="hover:text-primary underline underline-offset-4">
+          Sign Up
+        </Link>
+      </div>
+
       <p className="text-muted-foreground mt-4 px-8 text-center text-sm">
         By clicking login, you agree to our{" "}
         <Link to="/terms" className="hover:text-primary underline underline-offset-4">
