@@ -46,10 +46,19 @@ const SignIn = () => {
   return (
     <Form {...form}>
       <div className="mb-4 flex flex-col space-y-2 text-left">
-        <h1 className="text-2xl font-semibold tracking-wide">Sign In</h1>
+        <h1 className="text-3xl font-semibold tracking-wide">Welcome Back</h1>
         <p className="text-muted-foreground text-sm">
-          Enter your email and password below to log into your account
+          Enter your email and password below to log into your account.
         </p>
+        <div className="text-center text-sm">
+          Don't have an account?{" "}
+          <Link
+            to="/sign-up"
+            className="hover:text-primary underline underline-offset-4 hover:opacity-75"
+          >
+            Sign Up
+          </Link>
+        </div>
       </div>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -61,7 +70,7 @@ const SignIn = () => {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="kasw" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -73,44 +82,46 @@ const SignIn = () => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <div className="flex justify-between">
-                <FormLabel>Password</FormLabel>
-
-                <Link
-                  to="/forgot-password"
-                  tabIndex={-1}
-                  className="text-muted-foreground text-sm hover:opacity-75"
-                >
-                  Forgot Password?
-                </Link>
-              </div>
+              <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="********" {...field} />
+                <Input type="password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        {/* Remember me */}
-        <FormField
-          control={form.control}
-          name="remember"
-          render={({ field }) => (
-            <FormItem className="flex flex-row">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  className="cursor-pointer border border-zinc-400"
-                />
-              </FormControl>
 
-              <div className="space-y-1 leading-none">
-                <FormLabel>Remember me</FormLabel>
-              </div>
-            </FormItem>
-          )}
-        />
+        {/* Remember me */}
+        <div className="flex items-center justify-between">
+          <FormField
+            control={form.control}
+            name="remember"
+            render={({ field }) => (
+              <FormItem className="flex flex-row">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    className="cursor-pointer border border-zinc-400"
+                  />
+                </FormControl>
+
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Remember me</FormLabel>
+                </div>
+              </FormItem>
+            )}
+          />
+
+          <Link
+            to="/forgot-password"
+            tabIndex={-1}
+            className="text-muted-foreground text-sm hover:opacity-75"
+          >
+            Forgot Password?
+          </Link>
+        </div>
+
         <Button type="submit" className="w-full cursor-pointer">
           Sign In
         </Button>
@@ -135,15 +146,8 @@ const SignIn = () => {
         </Button>
       </div>
 
-      <div className="text-muted-foreground mt-4 px-8 text-center text-sm">
-        Don't have an account?{" "}
-        <Link to="/sign-up" className="hover:text-primary underline underline-offset-4">
-          Sign Up
-        </Link>
-      </div>
-
       <p className="text-muted-foreground mt-4 px-8 text-center text-sm">
-        By clicking login, you agree to our{" "}
+        By continuing, you agree to our{" "}
         <Link to="/terms" className="hover:text-primary underline underline-offset-4">
           Terms of Service
         </Link>{" "}

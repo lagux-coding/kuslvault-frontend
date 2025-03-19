@@ -126,5 +126,5 @@
 }
 
 .container {
-  @apply pr-2rem pl-2rem mr-auto ml-auto w-[100%];
+  @apply mr-auto ml-auto w-[100%] pr-[2rem] pl-[2rem];
 }
