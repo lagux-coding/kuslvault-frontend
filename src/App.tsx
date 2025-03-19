@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import ForgotPassword from "./features/auth/components/ForgotPassword";
 import SignIn from "./features/auth/components/SignIn";
 import SignUp from "./features/auth/components/SignUp";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const App = () => {
   return (
@@ -17,6 +18,9 @@ const App = () => {
           </Route>
 
           {/* Private Route */}
+
+          {/* Not Found Route */}
+          <Route path="*" element={<NotFoundPage />}></Route>
         </Routes>
       </div>
     </main>
