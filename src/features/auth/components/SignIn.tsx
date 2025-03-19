@@ -70,7 +70,7 @@ const SignIn = () => {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="username123" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -83,9 +83,8 @@ const SignIn = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
-
               <FormControl>
-                <Input placeholder="********" {...field} />
+                <Input type="password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -93,7 +92,6 @@ const SignIn = () => {
         />
 
         {/* Remember me */}
-
         <div className="flex items-center justify-between">
           <FormField
             control={form.control}
