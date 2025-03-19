@@ -46,10 +46,19 @@ const SignIn = () => {
   return (
     <Form {...form}>
       <div className="mb-4 flex flex-col space-y-2 text-left">
-        <h1 className="text-2xl font-semibold tracking-wide">Sign In</h1>
+        <h1 className="text-3xl font-semibold tracking-wide">Welcome Back</h1>
         <p className="text-muted-foreground text-sm">
-          Enter your email and password below to log into your account
+          Enter your email and password below to log into your account.
         </p>
+        <div className="text-center text-sm">
+          Don't have an account?{" "}
+          <Link
+            to="/sign-up"
+            className="hover:text-primary underline underline-offset-4 hover:opacity-75"
+          >
+            Sign Up
+          </Link>
+        </div>
       </div>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -139,18 +148,8 @@ const SignIn = () => {
         </Button>
       </div>
 
-      <div className="mt-4 px-8 text-center text-sm">
-        Don't have an account?{" "}
-        <Link
-          to="/sign-up"
-          className="hover:text-primary underline underline-offset-4 hover:opacity-75"
-        >
-          Sign Up
-        </Link>
-      </div>
-
       <p className="text-muted-foreground mt-4 px-8 text-center text-sm">
-        By clicking sign in, you agree to our{" "}
+        By continuing, you agree to our{" "}
         <Link to="/terms" className="hover:text-primary underline underline-offset-4">
           Terms of Service
         </Link>{" "}
