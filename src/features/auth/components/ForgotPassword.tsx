@@ -70,9 +70,12 @@ const ForgotPassword = () => {
           </form>
         </Form>
       </div>
-      <div className="text-muted-foreground mt-4 px-8 text-center text-sm">
+      <div className="mt-4 px-8 text-center text-sm">
         Don't have an account?{" "}
-        <Link to="/signup" className="hover:text-primary underline underline-offset-4">
+        <Link
+          to="/signup"
+          className="hover:text-primary underline underline-offset-4 hover:opacity-75"
+        >
           Sign Up
         </Link>
       </div>

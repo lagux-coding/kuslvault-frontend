@@ -61,7 +61,7 @@ const SignIn = () => {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="kasw" {...field} />
+                <Input placeholder="username123" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -73,17 +73,8 @@ const SignIn = () => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <div className="flex justify-between">
-                <FormLabel>Password</FormLabel>
+              <FormLabel>Password</FormLabel>
 
-                <Link
-                  to="/forgot-password"
-                  tabIndex={-1}
-                  className="text-muted-foreground text-sm hover:opacity-75"
-                >
-                  Forgot Password?
-                </Link>
-              </div>
               <FormControl>
                 <Input placeholder="********" {...field} />
               </FormControl>
@@ -91,26 +82,39 @@ const SignIn = () => {
             </FormItem>
           )}
         />
-        {/* Remember me */}
-        <FormField
-          control={form.control}
-          name="remember"
-          render={({ field }) => (
-            <FormItem className="flex flex-row">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  className="cursor-pointer border border-zinc-400"
-                />
-              </FormControl>
 
-              <div className="space-y-1 leading-none">
-                <FormLabel>Remember me</FormLabel>
-              </div>
-            </FormItem>
-          )}
-        />
+        {/* Remember me */}
+
+        <div className="flex items-center justify-between">
+          <FormField
+            control={form.control}
+            name="remember"
+            render={({ field }) => (
+              <FormItem className="flex flex-row">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    className="cursor-pointer border border-zinc-400"
+                  />
+                </FormControl>
+
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Remember me</FormLabel>
+                </div>
+              </FormItem>
+            )}
+          />
+
+          <Link
+            to="/forgot-password"
+            tabIndex={-1}
+            className="text-muted-foreground text-sm hover:opacity-75"
+          >
+            Forgot Password?
+          </Link>
+        </div>
+
         <Button type="submit" className="w-full cursor-pointer">
           Sign In
         </Button>
@@ -135,15 +139,18 @@ const SignIn = () => {
         </Button>
       </div>
 
-      <div className="text-muted-foreground mt-4 px-8 text-center text-sm">
+      <div className="mt-4 px-8 text-center text-sm">
         Don't have an account?{" "}
-        <Link to="/sign-up" className="hover:text-primary underline underline-offset-4">
+        <Link
+          to="/sign-up"
+          className="hover:text-primary underline underline-offset-4 hover:opacity-75"
+        >
           Sign Up
         </Link>
       </div>
 
       <p className="text-muted-foreground mt-4 px-8 text-center text-sm">
-        By clicking login, you agree to our{" "}
+        By clicking sign in, you agree to our{" "}
         <Link to="/terms" className="hover:text-primary underline underline-offset-4">
           Terms of Service
         </Link>{" "}
