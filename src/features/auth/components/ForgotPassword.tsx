@@ -39,7 +39,7 @@ const ForgotPassword = () => {
       <div className="mb-2 flex flex-col space-y-2 text-left">
         <div className="flex items-center justify-between">
           <h1 className="text-md font-semibold tracking-tight">Forgot Password</h1>
-          <Link to="/sign-in" className="text-primary flex items-center gap-1 hover:opacity-75">
+          <Link to="/login" className="text-primary flex items-center gap-1 hover:opacity-75">
             <GoArrowLeft />
             <span>Back</span>
           </Link>

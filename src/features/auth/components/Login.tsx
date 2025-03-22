@@ -1,7 +1,11 @@
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
+import api from "@/config/axios";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -37,28 +41,31 @@ const SignIn = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const response = await api.post("/auth/login", values, {
+        withCredentials: true,
+      });
+      if (response.data.status === 200) {
+        login();
+        navigate("/");
+      } else if (response.data.status === 2003) {
+        form.setError("username", { type: "manual" });
+        form.setError("password", { message: "Invalid username or password" });
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      form.setError("root", { message: "Invalid username or password" });
+    }
   }
 
   return (
     <Form {...form}>
       <div className="mb-4 flex flex-col space-y-2 text-left">
         <h1 className="text-3xl font-semibold tracking-wide">Welcome Back</h1>
-        <p className="text-muted-foreground text-sm">
-          Enter your email and password below to log into your account.
-        </p>
-        <div className="text-center text-sm">
-          Don't have an account?{" "}
-          <Link
-            to="/sign-up"
-            className="hover:text-primary underline underline-offset-4 hover:opacity-75"
-          >
-            Sign Up
-          </Link>
-        </div>
       </div>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -70,7 +77,7 @@ const SignIn = () => {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input autoComplete="username" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -84,7 +91,7 @@ const SignIn = () => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input type="password" autoComplete="current-password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -123,7 +130,7 @@ const SignIn = () => {
         </div>
 
         <Button type="submit" className="w-full cursor-pointer">
-          Sign In
+          Login
         </Button>
       </form>
 
@@ -146,16 +153,15 @@ const SignIn = () => {
         </Button>
       </div>
 
-      <p className="text-muted-foreground mt-4 px-8 text-center text-sm">
-        By continuing, you agree to our{" "}
-        <Link to="/terms" className="hover:text-primary underline underline-offset-4">
-          Terms of Service
-        </Link>{" "}
-        and{" "}
-        <Link to="/privacy" className="hover:text-primary underline underline-offset-4">
-          Privacy Policy.
+      <div className="mt-2 text-center text-sm">
+        Don't have an account?{" "}
+        <Link
+          to="/sign-up"
+          className="hover:text-primary underline underline-offset-4 hover:opacity-75"
+        >
+          Sign Up
         </Link>
-      </p>
+      </div>
     </Form>
   );
 };

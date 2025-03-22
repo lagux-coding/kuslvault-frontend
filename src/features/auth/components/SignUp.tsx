@@ -50,18 +50,6 @@ const SignUp = () => {
     <Form {...form}>
       <div className="mb-4 flex flex-col space-y-2 text-left">
         <h1 className="text-3xl font-semibold tracking-wide">Create your account</h1>
-        <p className="text-muted-foreground text-sm">
-          Enter your email and password to create an account.
-        </p>
-        <div className="text-center text-sm">
-          Already have an account?{" "}
-          <Link
-            to="/sign-in"
-            className="hover:text-primary underline underline-offset-4 hover:opacity-75"
-          >
-            Sign In
-          </Link>
-        </div>
       </div>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -73,7 +61,7 @@ const SignUp = () => {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input autoComplete="username" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -103,7 +91,7 @@ const SignUp = () => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input type="password" autoComplete="new-password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -118,7 +106,7 @@ const SignUp = () => {
             <FormItem>
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input type="password" autoComplete="new-password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -148,16 +136,15 @@ const SignUp = () => {
         </Button>
       </div>
 
-      <p className="text-muted-foreground mt-4 px-8 text-center text-sm">
-        By continuing, you agree to our{" "}
-        <Link to="/terms" className="hover:text-primary underline underline-offset-4">
-          Terms of Service
-        </Link>{" "}
-        and{" "}
-        <Link to="/privacy" className="hover:text-primary underline underline-offset-4">
-          Privacy Policy.
+      <div className="mt-2 text-center text-sm">
+        Already have an account?{" "}
+        <Link
+          to="/login"
+          className="hover:text-primary underline underline-offset-4 hover:opacity-75"
+        >
+          Login
         </Link>
-      </p>
+      </div>
     </Form>
   );
 };
