@@ -118,9 +118,14 @@
     border-color: hsl(var(--border));
     scrollbar-width: thin;
     scrollbar-color: hsl(var(--border)) transparent;
+
+    @apply tracking-wider;
   }
   body {
-    @apply bg-background text-foreground;
+    background-image: url("/images/bg.jpg");
+    background-size: cover;
+    background-position: center;
+    color: white;
   }
   html {
     font-family: "Inter", sans-serif;
