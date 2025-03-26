@@ -1,15 +1,12 @@
-import { useContext, useState } from "react";
-import { AuthContext } from "@/context/AuthProvider";
-import { loginService } from "@/services/userService";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { GrFormView } from "react-icons/gr";
-import { GrFormViewHide } from "react-icons/gr";
+import { GrFormView, GrFormViewHide } from "react-icons/gr";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
+import api from "@/config/axios";
 import Loader from "@/components/Loader";
 import RippleButton from "@/components/kusl-ui/RippleButton";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -20,23 +17,36 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-const formSchema = z.object({
-  username: z.string().min(4, {
-    message: "Username must be at least 6 characters.",
-  }),
-  password: z.string().min(6, {
-    message: "Password must be at least 6 characters.",
-  }),
-  remember: z.boolean().default(false).optional(),
-});
+const formSchema = z
+  .object({
+    username: z.string().min(4, {
+      message: "Username must be at least 4 characters.",
+    }),
+    email: z.string().email("Invalid email address."),
+    password: z.string().min(6, {
+      message: "Password must be at least 6 characters.",
+    }),
+    confirmPassword: z.string().min(6, {
+      message: "Password must be at least 6 characters.",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match",
+  });
 
-const SignIn = () => {
-  const [isLoading, setIsLoading] = useState(false);
+const SignUp = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
+  const togglePasswordVisibility = (field: "password" | "confirmPassword") => {
+    if (field === "password") {
+      setShowPassword((prev) => !prev);
+    } else if (field === "confirmPassword") {
+      setShowConfirmPassword((prev) => !prev);
+    }
   };
 
   // 1. Define the form
@@ -44,13 +54,13 @@ const SignIn = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
+      email: "",
       password: "",
-      remember: false,
+      confirmPassword: "",
     },
   });
 
   // 2. Define a submit handler.
-  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -58,20 +68,13 @@ const SignIn = () => {
     setError(null);
 
     try {
-      console.log(values);
-      const response = await loginService(values);
+      const response = await api.post("/auth/register", values);
 
       if (response.data.status === 200) {
-        localStorage.setItem("accessToken", response.data.data.accessToken);
-        login();
-        navigate("/");
-      } else if (response.data.status === 2003) {
-        form.setError("username", { type: "manual" });
-        form.setError("password", { message: "Invalid username or password" });
+        navigate("/login");
       }
     } catch (error) {
       setError("Somthing went wrong. Please try again later.");
-      form.setError("root", { message: "Invalid username or password" });
     } finally {
       setIsLoading(false);
     }
@@ -80,7 +83,7 @@ const SignIn = () => {
   return (
     <Form {...form}>
       <div className="mb-4 flex flex-col space-y-2 text-left">
-        <h1 className="text-3xl tracking-wide text-white">Welcome Back</h1>
+        <h1 className="text-3xl font-semibold tracking-wide text-white">Create your account</h1>
       </div>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -92,7 +95,6 @@ const SignIn = () => {
             <FormItem className="relative">
               <FormControl>
                 <input
-                  type="text"
                   autoComplete="username"
                   disabled={isLoading}
                   {...field}
@@ -107,6 +109,31 @@ const SignIn = () => {
             </FormItem>
           )}
         />
+
+        {/* Email */}
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem className="relative">
+              <FormControl>
+                <input
+                  type="email"
+                  autoComplete="email"
+                  disabled={isLoading}
+                  {...field}
+                  className="peer block w-full appearance-none border-0 border-b-2 border-gray-500 bg-transparent px-0 py-3 text-sm text-white focus:border-violet-600 focus:ring-0 focus:outline-none dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
+                  placeholder=" "
+                />
+              </FormControl>
+              <FormLabel className="text-md absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 transform text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:-translate-y-6 peer-focus:scale-80 peer-focus:text-violet-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-violet-500">
+                Email
+              </FormLabel>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {/* Password */}
         <FormField
           control={form.control}
@@ -117,8 +144,9 @@ const SignIn = () => {
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    autoComplete="current-password"
+                    autoComplete="new-password"
                     disabled={isLoading}
+                    tabIndex={-1}
                     {...field}
                     className="peer block w-full appearance-none border-0 border-b-2 border-gray-500 bg-transparent px-0 py-3 text-sm text-white focus:border-violet-600 focus:ring-0 focus:outline-none dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
                     placeholder=" "
@@ -128,7 +156,9 @@ const SignIn = () => {
                   </FormLabel>
                   <button
                     type="button"
-                    onClick={togglePasswordVisibility}
+                    onClick={() => {
+                      togglePasswordVisibility("password");
+                    }}
                     tabIndex={-1}
                     className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-200"
                   >
@@ -142,36 +172,43 @@ const SignIn = () => {
           )}
         />
 
-        {/* Remember me */}
-        <div className="flex items-center justify-between">
-          <FormField
-            control={form.control}
-            name="remember"
-            render={({ field }) => (
-              <FormItem className="flex flex-row">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    className="cursor-pointer border border-zinc-400 duration-200 hover:border-zinc-500 data-[state=checked]:bg-white data-[state=checked]:text-black"
+        {/* Confirm Password */}
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem className="relative">
+              <FormControl>
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    disabled={isLoading}
+                    tabIndex={-1}
+                    {...field}
+                    className="peer block w-full appearance-none border-0 border-b-2 border-gray-500 bg-transparent px-0 py-3 text-sm text-white focus:border-violet-600 focus:ring-0 focus:outline-none dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
+                    placeholder=" "
                   />
-                </FormControl>
-
-                <div className="space-y-1 leading-none text-zinc-400">
-                  <FormLabel>Remember me</FormLabel>
+                  <FormLabel className="text-md absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 transform text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:-translate-y-6 peer-focus:scale-80 peer-focus:text-violet-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-violet-500">
+                    Confirm Password
+                  </FormLabel>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      togglePasswordVisibility("confirmPassword");
+                    }}
+                    tabIndex={-1}
+                    className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-200"
+                  >
+                    {showConfirmPassword ? <GrFormView size={24} /> : <GrFormViewHide size={24} />}
+                  </button>
                 </div>
-              </FormItem>
-            )}
-          />
+              </FormControl>
 
-          <Link
-            to="/forgot-password"
-            tabIndex={-1}
-            className="text-sm text-gray-500 hover:opacity-75"
-          >
-            Forgot Password?
-          </Link>
-        </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         {/* Error message */}
         {error && (
@@ -192,7 +229,7 @@ const SignIn = () => {
               <Loader /> <span className="text-violet-300">Loading...</span>
             </div>
           ) : (
-            "Login"
+            "Register"
           )}
         </RippleButton>
       </form>
@@ -224,13 +261,13 @@ const SignIn = () => {
       </div>
 
       <div className="mt-2 text-center text-sm text-gray-400">
-        Don't have an account?{" "}
-        <Link to="/register" className="underline underline-offset-4 hover:opacity-75">
-          Register
+        Already have an account?{" "}
+        <Link to="/login" className="underline underline-offset-4 hover:opacity-75">
+          Login
         </Link>
       </div>
     </Form>
   );
 };
 
-export default SignIn;
+export default SignUp;
