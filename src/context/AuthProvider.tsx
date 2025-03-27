@@ -31,19 +31,32 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
     const verifyToken = async () => {
       try {
         const token = localStorage.getItem("accessToken");
-        const response = await verifyTokenService(token);
 
-        if (response.data.status === 200) {
-          setIsAuthenticated(true);
-        } else {
+        if (!token) {
+          // If the token is expired, refresh the token
           const refreshResponse = await refreshTokenService();
-
-          if (refreshResponse.data.status === 200) {
-            localStorage.setItem("accessToken", refreshResponse.data.data.accessToken);
+          if (refreshResponse.data.status == 200) {
             setIsAuthenticated(true);
+            localStorage.setItem("accessToken", refreshResponse.data.data.accessToken);
+            localStorage.setItem("isAuthenticated", "true");
+            return;
           } else {
-            console.log(refreshResponse.data.message);
+            // If the refresh token is expired, logout
             setIsAuthenticated(false);
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("isAuthenticated");
+          }
+        } else {
+          const response = await verifyTokenService(token);
+
+          if (response.data.status == 200) {
+            setIsAuthenticated(true);
+            localStorage.setItem("isAuthenticated", "true");
+            return;
+          } else {
+            setIsAuthenticated(false);
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("isAuthenticated");
           }
         }
       } catch (error: any) {

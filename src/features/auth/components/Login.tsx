@@ -60,6 +60,7 @@ const SignIn = () => {
     try {
       console.log(values);
       const response = await loginService(values);
+      console.log(response);
 
       if (response.data.status === 200) {
         localStorage.setItem("accessToken", response.data.data.accessToken);
