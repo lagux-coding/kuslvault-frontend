@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import api from "@/config/axios";
 import Loader from "@/components/Loader";
-import RippleButton from "@/components/kusl-ui/RippleButton";
+import RippleButton from "@/components/custom-ui/RippleButton";
 import {
   Form,
   FormControl,

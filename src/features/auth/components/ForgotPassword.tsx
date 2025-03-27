@@ -5,8 +5,7 @@ import { GoArrowLeft } from "react-icons/go";
 import { Link } from "react-router-dom";
 import { z } from "zod";
 import Loader from "@/components/Loader";
-import RippleButton from "@/components/kusl-ui/RippleButton";
-import { Button } from "@/components/ui/button";
+import RippleButton from "@/components/custom-ui/RippleButton";
 import {
   Form,
   FormControl,
@@ -15,7 +14,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),

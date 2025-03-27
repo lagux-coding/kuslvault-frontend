@@ -8,7 +8,7 @@ import { GrFormViewHide } from "react-icons/gr";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import Loader from "@/components/Loader";
-import RippleButton from "@/components/kusl-ui/RippleButton";
+import RippleButton from "@/components/custom-ui/RippleButton";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
