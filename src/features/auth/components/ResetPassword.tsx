@@ -55,13 +55,13 @@ const ResetPassword = () => {
 
   const handleResetPassword = async () => {
     setIsLoading(true);
-    setInvalid(true);
     try {
       const response = await resetPasswordService(token as string);
       if (response.data.status === 200) {
-        setInvalid(false);
       } else {
         setErrorMessage("Invalid or expired token");
+        setInvalid(true);
+        console.log(errorMessage);
       }
     } catch (error) {
       setErrorMessage("An error occurred. Please try again later.");
@@ -85,8 +85,8 @@ const ResetPassword = () => {
       const response = await changePasswordService(token as string, values);
       if (response.data.status === 200) {
         setSuccess(true);
-        setInvalid(true);
       } else {
+        setInvalid(true);
         setErrorMessage("Invalid or expired token");
       }
     } catch (error) {
