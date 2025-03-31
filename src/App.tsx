@@ -5,6 +5,7 @@ import PublicRoute from "./components/PublicRoute";
 import ForgotPassword from "./features/auth/components/ForgotPassword";
 import SignIn from "./features/auth/components/Login";
 import SignUp from "./features/auth/components/Register";
+import ResetPassword from "./features/auth/components/ResetPassword";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         <Route path="/login" element={<SignIn />} />
         <Route path="/register" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Route>
 
       {/* Private Route */}
