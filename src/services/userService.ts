@@ -14,7 +14,8 @@ export const registerService = async (data: {
   password: string;
   confirmPassword: string;
 }) => {
-  return await api.post("/auth/register", null, { withCredentials: true });
+  console.log(data);
+  return await api.post("/auth/register", data, { withCredentials: true });
 };
 
 export const logoutService = async (token: string | null) => {

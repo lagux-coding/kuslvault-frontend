@@ -21,10 +21,12 @@ import {
 
 const formSchema = z
   .object({
-    password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
-    confirmPassword: z
-      .string()
-      .min(6, { message: "Confirm Password must be at least 6 characters long" }),
+    password: z.string().min(8, {
+      message: "Password must be at least 8 characters.",
+    }),
+    confirmPassword: z.string().min(6, {
+      message: "Password must be at least 8 characters.",
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { registerService } from "@/services/userService";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { GrFormView, GrFormViewHide } from "react-icons/gr";
@@ -20,15 +21,26 @@ import AnimatedPage from "@/components/wrappers/AnimatedPage";
 
 const formSchema = z
   .object({
-    username: z.string().min(4, {
-      message: "Username must be at least 4 characters.",
-    }),
+    username: z
+      .string()
+      .min(6, {
+        message: "Username must be at least 4 characters.",
+      })
+      .max(50, {
+        message: "Username must be at most 50 characters.",
+      })
+      .regex(/^[a-zA-Z0-9_]+$/, {
+        message: "Username can only contain letters, numbers, and underscores.",
+      }),
+
     email: z.string().email("Invalid email address."),
-    password: z.string().min(6, {
-      message: "Password must be at least 6 characters.",
+
+    password: z.string().min(8, {
+      message: "Password must be at least 8 characters.",
     }),
+
     confirmPassword: z.string().min(6, {
-      message: "Password must be at least 6 characters.",
+      message: "Password must be at least 8 characters.",
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -69,10 +81,12 @@ const SignUp = () => {
     setError(null);
 
     try {
-      const response = await api.post("/auth/register", values);
+      const response = await registerService(values);
 
       if (response.data.status === 200) {
         navigate("/login");
+      } else {
+        console.log(response.data);
       }
     } catch (error) {
       setError("Somthing went wrong. Please try again later.");
@@ -148,7 +162,6 @@ const SignUp = () => {
                       type={showPassword ? "text" : "password"}
                       autoComplete="new-password"
                       disabled={isLoading}
-                      tabIndex={-1}
                       {...field}
                       className="peer block w-full appearance-none border-0 border-b-2 border-gray-500 bg-transparent px-0 py-3 text-sm text-white focus:border-violet-600 focus:ring-0 focus:outline-none dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
                       placeholder=" "
@@ -186,7 +199,6 @@ const SignUp = () => {
                       type={showConfirmPassword ? "text" : "password"}
                       autoComplete="new-password"
                       disabled={isLoading}
-                      tabIndex={-1}
                       {...field}
                       className="peer block w-full appearance-none border-0 border-b-2 border-gray-500 bg-transparent px-0 py-3 text-sm text-white focus:border-violet-600 focus:ring-0 focus:outline-none dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
                       placeholder=" "
