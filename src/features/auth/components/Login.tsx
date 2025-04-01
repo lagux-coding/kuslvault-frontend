@@ -23,14 +23,9 @@ import {
 import AnimatedPage from "@/components/wrappers/AnimatedPage";
 
 const formSchema = z.object({
-  username: z
-    .string()
-    .min(6, {
-      message: "Username must be at least 6 characters.",
-    })
-    .max(50, {
-      message: "Username must be at most 50 characters.",
-    }),
+  username: z.string().min(6, {
+    message: "Username must be at least 6 characters.",
+  }),
 
   password: z.string().min(8, {
     message: "Password must be at least 8 characters.",
@@ -138,7 +133,7 @@ const SignIn = () => {
                   />
                 </FormControl>
                 <FormLabel className="text-md pointer-events-none absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 transform text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:-translate-y-6 peer-focus:scale-80 peer-focus:text-violet-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-violet-500">
-                  Username
+                  Username or Email
                 </FormLabel>
                 <FormMessage />
               </FormItem>
