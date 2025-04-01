@@ -14,7 +14,6 @@ export const registerService = async (data: {
   password: string;
   confirmPassword: string;
 }) => {
-  console.log(data);
   return await api.post("/auth/register", data, { withCredentials: true });
 };
 
@@ -46,12 +45,9 @@ export const refreshTokenService = async () => {
 
 export const loginGoogleService = async (credential: string, isRemember: boolean) => {
   return await api.post(
-    `/auth/google?r=${isRemember}`,
+    `/auth/google?r=${isRemember}&t=${credential}`,
     {},
     {
-      headers: {
-        Authorization: `Bearer ${credential}`,
-      },
       withCredentials: true,
     },
   );

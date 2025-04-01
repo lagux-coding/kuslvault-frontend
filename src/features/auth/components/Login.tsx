@@ -26,13 +26,10 @@ const formSchema = z.object({
   username: z
     .string()
     .min(6, {
-      message: "Username must be at least 4 characters.",
+      message: "Username must be at least 6 characters.",
     })
     .max(50, {
       message: "Username must be at most 50 characters.",
-    })
-    .regex(/^[a-zA-Z0-9_]+$/, {
-      message: "Username can only contain letters, numbers, and underscores.",
     }),
 
   password: z.string().min(8, {
@@ -95,9 +92,9 @@ const SignIn = () => {
       try {
         const credential = response.access_token;
         const isRemember = form.getValues("remember") ?? false;
-        console.log(response);
 
         const res = await loginGoogleService(credential, isRemember);
+        console.log(res);
 
         if (res.data.status === 200) {
           login(res.data.data.accessToken);

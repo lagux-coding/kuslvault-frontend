@@ -24,13 +24,10 @@ const formSchema = z
     username: z
       .string()
       .min(6, {
-        message: "Username must be at least 4 characters.",
+        message: "Username must be at least 6 characters.",
       })
       .max(50, {
         message: "Username must be at most 50 characters.",
-      })
-      .regex(/^[a-zA-Z0-9_]+$/, {
-        message: "Username can only contain letters, numbers, and underscores.",
       }),
 
     email: z.string().email("Invalid email address."),
