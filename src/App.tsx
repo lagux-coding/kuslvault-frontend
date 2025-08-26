@@ -1,17 +1,14 @@
+import { ForgotPassword, Login, Register, ResetPassword } from "@/features/auth";
 import { AuthPage, Home, NotFoundPage, TestPage } from "@/pages";
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
-import ForgotPassword from "./features/auth/components/ForgotPassword";
-import SignIn from "./features/auth/components/Login";
-import SignUp from "./features/auth/components/Register";
-import ResetPassword from "./features/auth/components/ResetPassword";
+import Test2Page from "./pages/Test2Page";
 
 const App = () => {
   return (
     <Routes>
       {/* Public Route */}
-
       <Route
         element={
           <PublicRoute>
@@ -19,8 +16,8 @@ const App = () => {
           </PublicRoute>
         }
       >
-        <Route path="/login" element={<SignIn />} />
-        <Route path="/register" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
       </Route>
@@ -37,6 +34,7 @@ const App = () => {
       />
 
       <Route path="/test" element={<TestPage />}></Route>
+      <Route path="/test2" element={<Test2Page />}></Route>
 
       {/* Not Found Route */}
       <Route path="*" element={<NotFoundPage />}></Route>

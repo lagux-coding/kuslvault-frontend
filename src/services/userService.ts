@@ -1,19 +1,11 @@
+import { ChangePasswordRequest, LoginRequest, RegisterRequest } from "@/types/auth";
 import api from "@/config/axios";
 
-export const loginService = async (data: {
-  username: string;
-  password: string;
-  remember?: boolean;
-}) => {
+export const loginService = async (data: LoginRequest) => {
   return await api.post("/auth/login", data, { withCredentials: true });
 };
 
-export const registerService = async (data: {
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}) => {
+export const registerService = async (data: RegisterRequest) => {
   return await api.post("/auth/register", data, { withCredentials: true });
 };
 
@@ -61,12 +53,6 @@ export const resetPasswordService = async (token: string) => {
   return await api.post(`/auth/reset-password?token=${encodeURIComponent(token)}`);
 };
 
-export const changePasswordService = async (
-  token: string,
-  data: {
-    password: string;
-    confirmPassword: string;
-  },
-) => {
+export const changePasswordService = async (token: string, data: ChangePasswordRequest) => {
   return await api.post(`/auth/change-password?token=${encodeURIComponent(token)}`, data);
 };

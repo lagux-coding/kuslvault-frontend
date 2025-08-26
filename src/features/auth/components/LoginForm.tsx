@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "@/context/AuthProvider";
-import { loginGoogleService, loginService } from "@/services/userService";
+import { GithubButton, GoogleButton } from "@/features/auth/components";
+import { loginService } from "@/services/userService";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useGoogleLogin } from "@react-oauth/google";
 import { useForm } from "react-hook-form";
 import { GrFormView } from "react-icons/gr";
 import { GrFormViewHide } from "react-icons/gr";
@@ -20,7 +20,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import AnimatedPage from "@/components/wrappers/AnimatedPage";
 
 const formSchema = z.object({
   username: z.string().min(6, {
@@ -33,7 +32,7 @@ const formSchema = z.object({
   remember: z.boolean().default(false).optional(),
 });
 
-const SignIn = () => {
+const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -80,42 +79,14 @@ const SignIn = () => {
     }
   }
 
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: async (response) => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const credential = response.access_token;
-        const isRemember = form.getValues("remember") ?? false;
-
-        const res = await loginGoogleService(credential, isRemember);
-        console.log(res);
-
-        if (res.data.status === 200) {
-          login(res.data.data.accessToken);
-          navigate("/");
-        }
-      } catch (error: any) {
-        setError(error.message || "Login Failed");
-      } finally {
-        setIsLoading(false);
-      }
-    },
-  });
-
-  const handleGithubLogin = () => {
-    const isRemember = form.getValues("remember") ?? false;
-    window.location.href = `https://github.com/login/oauth/authorize?client_id=Ov23liJYF8P8JVyV3xv2&redirect_uri=http://localhost:8080/api/auth/github/callback&state=${encodeURIComponent(isRemember)}&prompt=select_account`;
-  };
-
   return (
-    <AnimatedPage>
-      <Form {...form}>
-        <div className="mb-4 flex flex-col space-y-2 text-left">
-          <h1 className="text-3xl tracking-wide text-white">Welcome Back</h1>
-        </div>
+    <Form {...form}>
+      <div className="w-full">
+        <h1 className="text-3xl font-semibold">
+          Welcome to <span className="text-gradient-2">Kusl Vault</span>
+        </h1>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 space-y-4">
           {/* Username */}
           <FormField
             control={form.control}
@@ -128,11 +99,11 @@ const SignIn = () => {
                     autoComplete="username"
                     disabled={isLoading}
                     {...field}
-                    className="peer block w-full appearance-none border-0 border-b-2 border-gray-500 bg-transparent px-0 py-3 text-sm text-white focus:border-violet-600 focus:ring-0 focus:outline-none dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
+                    className="peer block w-full appearance-none border-0 border-b-2 border-black/20 bg-transparent px-0 py-3 text-sm focus:border-violet-600 focus:ring-0 focus:outline-none dark:border-gray-600 dark:focus:border-blue-500"
                     placeholder=" "
                   />
                 </FormControl>
-                <FormLabel className="text-md pointer-events-none absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 transform text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:-translate-y-6 peer-focus:scale-80 peer-focus:text-violet-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-violet-500">
+                <FormLabel className="pointer-events-none absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:-translate-y-6 peer-focus:scale-80 peer-focus:text-violet-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-violet-500">
                   Username or Email
                 </FormLabel>
                 <FormMessage />
@@ -152,17 +123,17 @@ const SignIn = () => {
                       autoComplete="current-password"
                       disabled={isLoading}
                       {...field}
-                      className="peer block w-full appearance-none border-0 border-b-2 border-gray-500 bg-transparent px-0 py-3 text-sm text-white focus:border-violet-600 focus:ring-0 focus:outline-none dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
+                      className="peer block w-full appearance-none border-0 border-b-2 border-black/20 bg-transparent px-0 py-3 text-sm focus:border-violet-600 focus:ring-0 focus:outline-none dark:border-gray-600 dark:focus:border-blue-500"
                       placeholder=" "
                     />
-                    <FormLabel className="text-md pointer-events-none absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 transform text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:-translate-y-6 peer-focus:scale-80 peer-focus:text-violet-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-violet-500">
+                    <FormLabel className="pointer-events-none absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:-translate-y-6 peer-focus:scale-80 peer-focus:text-violet-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-violet-500">
                       Password
                     </FormLabel>
                     <button
                       type="button"
                       onClick={togglePasswordVisibility}
                       tabIndex={-1}
-                      className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-200"
+                      className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-black/50 hover:text-black"
                     >
                       {showPassword ? <GrFormView size={24} /> : <GrFormViewHide size={24} />}
                     </button>
@@ -185,11 +156,11 @@ const SignIn = () => {
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      className="cursor-pointer border border-zinc-400 duration-200 hover:border-zinc-500 data-[state=checked]:bg-white data-[state=checked]:text-black"
+                      className="cursor-pointer border border-[#71717B] duration-200 hover:border-zinc-500 data-[state=checked]:bg-black"
                     />
                   </FormControl>
 
-                  <div className="space-y-1 leading-none text-zinc-400">
+                  <div className="leading-none text-black/50">
                     <FormLabel>Remember me</FormLabel>
                   </div>
                 </FormItem>
@@ -199,7 +170,7 @@ const SignIn = () => {
             <Link
               to="/forgot-password"
               tabIndex={-1}
-              className="text-sm text-gray-500 hover:opacity-75"
+              className="text-center text-sm text-gray-400 hover:text-black"
             >
               Forgot Password?
             </Link>
@@ -207,14 +178,14 @@ const SignIn = () => {
 
           {/* Error message */}
           {error && (
-            <FormDescription className="text-left text-sm text-red-400">{error}</FormDescription>
+            <FormDescription className="text-left text-sm text-red-500">{error}</FormDescription>
           )}
 
           {/* Submit button */}
           <RippleButton
             type="submit"
             disabled={isLoading}
-            className="w-full cursor-pointer border-transparent bg-[#26262B] text-white duration-200 hover:bg-zinc-700 hover:text-white active:scale-95"
+            className="w-full cursor-pointer border-transparent bg-[#5E49D8] text-white shadow-lg shadow-black/16 duration-200 hover:bg-[#6B53F6] active:scale-95"
             onClick={() => {
               console.log("text");
             }}
@@ -229,43 +200,38 @@ const SignIn = () => {
           </RippleButton>
         </form>
 
-        <div className="relative my-8">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-gray-300"></span>
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="rounded-lg bg-black px-4 text-white backdrop-blur-lg">Or</span>
+        <div className="my-4">
+          <div className="flex items-center justify-between">
+            <span className="w-1/3 border-t border-[#E1E0E5]"></span>
+            <span className="text-xs text-[#737379]">Or login with</span>
+            <span className="w-1/3 border-t border-[#E1E0E5]"></span>
           </div>
         </div>
 
         {/* Oauth 2 */}
-        <div className="flex flex-col items-center gap-2">
-          <RippleButton
-            disabled={isLoading}
-            onClick={() => handleGoogleLogin()}
-            className="w-full cursor-pointer border-transparent bg-[#26262B] text-white duration-100 hover:bg-zinc-700 hover:text-white active:scale-95"
-          >
-            <img src="/svg/gmail.svg" alt="Gmail" className="h-5 w-5 text-white" /> Continue with
-            Google
-          </RippleButton>
-          <RippleButton
-            disabled={isLoading}
-            onClick={() => handleGithubLogin()}
-            className="w-full cursor-pointer border-transparent bg-[#26262B] text-white duration-100 hover:bg-zinc-700 hover:text-white active:scale-95"
-          >
-            <img src="/svg/github.svg" alt="Github" className="h-5 w-5" /> Continue with Github
-          </RippleButton>
+        <div className="flex items-center gap-2">
+          <GoogleButton
+            remember={form.getValues("remember")}
+            setError={setError}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+          />
+
+          <GithubButton remember={form.getValues("remember")} isLoading={isLoading} />
         </div>
 
-        <div className="mt-2 text-center text-sm text-gray-400">
+        <div className="mt-2 text-center text-sm text-black/50">
           Don't have an account?{" "}
-          <Link to="/register" className="underline underline-offset-4 hover:opacity-75">
+          <Link
+            to="/register"
+            className="text-[#4C3CC6] underline underline-offset-4 hover:text-[#5756bb]"
+          >
             Register
           </Link>
         </div>
-      </Form>
-    </AnimatedPage>
+      </div>
+    </Form>
   );
 };
 
-export default SignIn;
+export default LoginForm;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { changePasswordService, resetPasswordService } from "@/services/userService";
+import { useLayoutStore } from "@/store/showLogo";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { set, useForm } from "react-hook-form";
@@ -33,7 +34,7 @@ const formSchema = z
     message: "Passwords do not match",
   });
 
-const ResetPassword = () => {
+const ResetPasswordForm = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
   const [showPassword, setShowPassword] = useState(false);
@@ -43,6 +44,7 @@ const ResetPassword = () => {
   const [success, setSuccess] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(5);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const setShowLogo = useLayoutStore((state) => state.setShowLogo);
 
   const togglePasswordVisibility = (field: "password" | "confirmPassword") => {
     if (field === "password") {
@@ -99,20 +101,25 @@ const ResetPassword = () => {
   }
 
   useEffect(() => {
-    if (success) {
-      const interval = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            clearInterval(interval);
-            window.close();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
+    if (!success) return;
+    // Set logo
+    setShowLogo(false);
 
-      return () => clearInterval(interval);
-    }
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          window.close();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+      setShowLogo(true);
+    };
   }, [success]);
 
   return (
@@ -124,20 +131,20 @@ const ResetPassword = () => {
           {success ? (
             <>
               <Success />
-              <div className="mb-4 flex flex-col space-y-2 text-center">
-                <p className="text-md tracking-wide text-white">
-                  Password changed successfully!
-                  <span className="block text-center">Close in {countdown} seconds...</span>
+              <div className="flex flex-col items-center justify-center gap-4 text-center">
+                <p className="text-3xl font-semibold">Reset password successfully</p>
+                <p className="text-black/50">
+                  Close in <span className="text-emerald-500">{countdown}s</span>
                 </p>
               </div>
             </>
           ) : (
             <Form {...form}>
-              <div className="mb-4 flex flex-col space-y-2 text-left">
-                <h1 className="text-3xl tracking-wide text-white">Change password</h1>
+              <div className="mb-4 flex flex-col space-y-2 text-center">
+                <h1 className="text-3xl font-semibold">Create new password</h1>
               </div>
 
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
                 {/* Password */}
                 <FormField
                   control={form.control}
@@ -150,13 +157,12 @@ const ResetPassword = () => {
                             type={showPassword ? "text" : "password"}
                             autoComplete="new-password"
                             disabled={isLoading}
-                            tabIndex={-1}
                             {...field}
-                            className="peer block w-full appearance-none border-0 border-b-2 border-gray-500 bg-transparent px-0 py-3 text-sm text-white focus:border-violet-600 focus:ring-0 focus:outline-none dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
+                            className="peer block w-full appearance-none border-0 border-b-2 border-black/20 bg-transparent px-0 py-3 text-sm focus:border-violet-600 focus:ring-0 focus:outline-none dark:border-gray-600 dark:focus:border-blue-500"
                             placeholder=" "
                           />
-                          <FormLabel className="text-md pointer-events-none absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 transform text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:-translate-y-6 peer-focus:scale-80 peer-focus:text-violet-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-violet-500">
-                            New password
+                          <FormLabel className="pointer-events-none absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:-translate-y-6 peer-focus:scale-80 peer-focus:text-violet-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-violet-500">
+                            Password
                           </FormLabel>
                           <button
                             type="button"
@@ -188,13 +194,12 @@ const ResetPassword = () => {
                             type={showConfirmPassword ? "text" : "password"}
                             autoComplete="new-password"
                             disabled={isLoading}
-                            tabIndex={-1}
                             {...field}
-                            className="peer block w-full appearance-none border-0 border-b-2 border-gray-500 bg-transparent px-0 py-3 text-sm text-white focus:border-violet-600 focus:ring-0 focus:outline-none dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
+                            className="peer block w-full appearance-none border-0 border-b-2 border-black/20 bg-transparent px-0 py-3 text-sm focus:border-violet-600 focus:ring-0 focus:outline-none dark:border-gray-600 dark:focus:border-blue-500"
                             placeholder=" "
                           />
-                          <FormLabel className="text-md pointer-events-none absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 transform text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:-translate-y-6 peer-focus:scale-80 peer-focus:text-violet-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-violet-500">
-                            Confirm new password
+                          <FormLabel className="pointer-events-none absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:-translate-y-6 peer-focus:scale-80 peer-focus:text-violet-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-violet-500">
+                            Confirm password
                           </FormLabel>
                           <button
                             type="button"
@@ -222,7 +227,7 @@ const ResetPassword = () => {
                 <RippleButton
                   type="submit"
                   disabled={isLoading}
-                  className="w-full cursor-pointer border-transparent bg-[#26262B] text-white duration-200 hover:bg-zinc-700 hover:text-white active:scale-95"
+                  className="mt-2 w-full cursor-pointer border-transparent bg-[#5E49D8] text-white shadow-lg shadow-black/16 duration-200 hover:bg-[#6B53F6] active:scale-95"
                   onClick={() => {
                     console.log("text");
                   }}
@@ -232,7 +237,7 @@ const ResetPassword = () => {
                       <Loader /> <span className="text-violet-300">Loading...</span>
                     </div>
                   ) : (
-                    "Reset"
+                    "Confirm"
                   )}
                 </RippleButton>
               </form>
@@ -244,4 +249,4 @@ const ResetPassword = () => {
   );
 };
 
-export default ResetPassword;
+export default ResetPasswordForm;

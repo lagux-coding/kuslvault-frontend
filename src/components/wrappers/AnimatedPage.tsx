@@ -22,7 +22,7 @@ const AnimatedPage = ({ children }: AnimatedWrapperProps) => {
       initial="initial"
       animate="animate"
       exit="exit"
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+      // transition={{ duration: 0.3, ease: "easeInOut" }}
     >
       {children}
     </motion.div>
